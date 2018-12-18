@@ -1,12 +1,12 @@
-﻿using Microsoft.Xrm.Sdk.Client;
-using Microsoft.Xrm.Sdk.Query;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Configuration;
 using System.Linq;
 using System.ServiceModel.Description;
-using System.Text;
-using System.Threading.Tasks;
+
+using Microsoft.Xrm.Sdk.Client;
+using Microsoft.Xrm.Sdk.Messages;
+using Microsoft.Xrm.Sdk.Metadata;
+using Microsoft.Xrm.Sdk.Query;
 
 namespace TestConsoleApp
 {
@@ -37,6 +37,20 @@ namespace TestConsoleApp
             QEjnbs_location.ColumnSet.AddColumns("jnbs_name", "jnbs_code", "createdon");
 
             var response = crmInstance.RetrieveMultiple(QEjnbs_location);
+
+            // Add Options Set for Lead Test.
+            var attributeRequest = new RetrieveAttributeRequest
+            {
+                EntityLogicalName = "lead",
+                LogicalName = "jnbs_status",
+                RetrieveAsIfPublished = true
+            };
+
+            var attributeResponse = (RetrieveAttributeResponse)crmInstance.Execute(attributeRequest);
+            var attributeMetadata = (EnumAttributeMetadata)attributeResponse.AttributeMetadata;
+
+            var optionList = (from o in attributeMetadata.OptionSet.Options
+                              select new { Value = o.Value, Text = o.Label.UserLocalizedLabel.Label }).ToList();
         }
     }
 }
