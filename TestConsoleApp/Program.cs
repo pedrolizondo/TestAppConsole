@@ -52,7 +52,9 @@ namespace TestConsoleApp
 
                 if (response.Entities != null)
                 {
-                    Console.WriteLine("Records found", ++recordCount);
+                    recordCount = recordCount + response.Entities.Count;
+                    Console.WriteLine("Records found: " + response.Entities.Count.ToString(), response.Entities.Count);
+                    Console.WriteLine("Records found so far... " + recordCount.ToString());
                 }
 
                 if (response.MoreRecords)
