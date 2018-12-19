@@ -69,7 +69,7 @@ namespace TestConsoleApp
                 }
             }
 
-            // Add Options Set for Lead Test.
+            // Add Options Set for Lead Status Test.
             var attributeRequest = new RetrieveAttributeRequest
             {
                 EntityLogicalName = "lead",
@@ -82,6 +82,30 @@ namespace TestConsoleApp
 
             var optionList = (from o in attributeMetadata.OptionSet.Options
                               select new { Value = o.Value, Text = o.Label.UserLocalizedLabel.Label }).ToList();
+
+            foreach(var option in optionList)
+            {
+                Console.WriteLine("option: " + option.Value + " - " + option.Text);
+            }
+
+            // Add Options Set for Lead Title Test.
+            var attributeTitleRequest = new RetrieveAttributeRequest
+            {
+                EntityLogicalName = "lead",
+                LogicalName = "jnbs_titlegeneral",
+                RetrieveAsIfPublished = true
+            };
+
+            var attributeTitleResponse = (RetrieveAttributeResponse)crmInstance.Execute(attributeTitleRequest);
+            var attributeTitleMetadata = (EnumAttributeMetadata)attributeTitleResponse.AttributeMetadata;
+
+            var titleOptionsList = (from o in attributeTitleMetadata.OptionSet.Options
+                              select new { Value = o.Value, Text = o.Label.UserLocalizedLabel.Label }).ToList();
+
+            foreach (var titleOption in titleOptionsList)
+            {
+                Console.WriteLine("option: " + titleOption.Value + " - " + titleOption.Text);
+            }
         }
     }
 }
