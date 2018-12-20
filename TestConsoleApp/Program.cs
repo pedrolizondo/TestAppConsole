@@ -7,6 +7,7 @@ using Microsoft.Xrm.Sdk.Client;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
+using Microsoft.Xrm.Tooling.Connector;
 
 namespace TestConsoleApp
 {
@@ -36,6 +37,12 @@ namespace TestConsoleApp
             crmInstance.Timeout = TimeSpan.FromSeconds(Timeout);
             crmInstance.EnableProxyTypes();
 
+
+            //Use the connection string named "MyCRMServer"
+            //from the configuration file
+            CrmServiceClient crmSvc = new CrmServiceClient(ConfigurationManager.ConnectionStrings["MyCRMServer"].ConnectionString);
+            
+
             // Instantiate QueryExpression QEjnbs_location
             var QEjnbs_location = new QueryExpression("jnbs_location");
             //QEjnbs_location.TopCount = 50;
@@ -48,7 +55,7 @@ namespace TestConsoleApp
 
             while (true)
             {
-                var response = crmInstance.RetrieveMultiple(QEjnbs_location);
+                var response = crmSvc.RetrieveMultiple(QEjnbs_location);
 
                 if (response.Entities != null)
                 {
@@ -77,7 +84,7 @@ namespace TestConsoleApp
                 RetrieveAsIfPublished = true
             };
 
-            var attributeResponse = (RetrieveAttributeResponse)crmInstance.Execute(attributeRequest);
+            var attributeResponse = (RetrieveAttributeResponse)crmSvc.Execute(attributeRequest);
             var attributeMetadata = (EnumAttributeMetadata)attributeResponse.AttributeMetadata;
 
             var optionList = (from o in attributeMetadata.OptionSet.Options
@@ -96,7 +103,7 @@ namespace TestConsoleApp
                 RetrieveAsIfPublished = true
             };
 
-            var attributeTitleResponse = (RetrieveAttributeResponse)crmInstance.Execute(attributeTitleRequest);
+            var attributeTitleResponse = (RetrieveAttributeResponse)crmSvc.Execute(attributeTitleRequest);
             var attributeTitleMetadata = (EnumAttributeMetadata)attributeTitleResponse.AttributeMetadata;
 
             var titleOptionsList = (from o in attributeTitleMetadata.OptionSet.Options
